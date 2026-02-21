@@ -1,0 +1,140 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<style>
+    /* Hero Section */
+    .hero {
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        color: white;
+        padding: 4rem 2rem;
+        border-radius: 24px;
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .hero h1 { font-size: 2.5rem; margin-bottom: 1rem; }
+    .hero p { opacity: 0.8; font-size: 1.1rem; }
+
+    /* Shop Grid */
+    .shop-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 2.5rem;
+    }
+
+    .product-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        transition: transform 0.2s ease;
+        border: 1px solid transparent;
+    }
+
+    .product-card:hover {
+        transform: translateY(-8px);
+        border-color: var(--border);
+    }
+
+    .img-container {
+        width: 100%;
+        height: 320px;
+        background: #f1f5f9;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .img-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .category-badge {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: rgba(255,255,255,0.9);
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--primary);
+    }
+
+    .details {
+        padding: 1.25rem;
+    }
+
+    .book-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+        display: block;
+        color: var(--dark);
+    }
+
+    .author-name {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+
+    .isbn {
+        font-family: monospace;
+        font-size: 0.8rem;
+        color: #94a3b8;
+    }
+
+    .btn-buy {
+        display: block;
+        width: 100%;
+        background: var(--dark);
+        color: white;
+        text-align: center;
+        padding: 0.75rem;
+        border-radius: 8px;
+        text-decoration: none;
+        margin-top: 1rem;
+        font-weight: 500;
+        transition: background 0.2s;
+    }
+
+    .btn-buy:hover {
+        background: var(--primary);
+    }
+</style>
+
+<div class="container">
+    <section class="hero">
+        <h1>Discover Your Next Story</h1>
+        <p>Browse our curated collection of {{ books.count }} books from world-class authors.</p>
+    </section>
+
+    <div class="shop-grid">
+        {% for book in books %}
+        <div class="product-card">
+            <div class="img-container">
+                <span class="category-badge">{{ book.book_category.cat_name }}</span>
+                {% if book.image %}
+                    <img src="{{ book.image.url }}" alt="{{ book.book_title }}">
+                {% else %}
+                    <div style="display:flex; height:100%; align-items:center; justify-content:center; color:#cbd5e1;">Cover Missing</div>
+                {% endif %}
+            </div>
+            
+            <div class="details">
+                <span class="isbn">ISBN: {{ book.book_isbn }}</span>
+                <a href="#" class="book-title">{{ book.book_title }}</a>
+                <p class="author-name">By {{ book.book_author.auth_name }}</p>
+                
+                <a href="{% url 'dashboard:book_detail' book.book_id %}" class="btn-buy">Reserve</a>
+            </div>
+        </div>
+        {% empty %}
+        <div style="grid-column: 1/-1; text-align: center; padding: 5rem;">
+            <h3>Our shelves are empty! Check back soon.</h3>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
