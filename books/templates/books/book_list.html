@@ -1,0 +1,130 @@
+{% extends 'core/base.html' %}
+{% load static %}
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<style>
+    .catalog-container {
+        padding: 20px 0;
+    }
+    .catalog-header {
+        margin-bottom: 40px;
+        text-align: center;
+    }
+    .catalog-header h1 {
+        font-size: 2.5rem;
+        color: #1e293b;
+        margin-bottom: 10px;
+    }
+    
+    /* Grid Layout */
+    .book-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+
+    /* Card Styling */
+    .book-card {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .book-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        border-color: #2563eb;
+    }
+
+    .category-label {
+        color: #2563eb;
+        background: #eff6ff;
+        padding: 4px 12px;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        width: fit-content;
+        margin-bottom: 15px;
+    }
+
+    .title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 5px;
+    }
+
+    .author {
+        color: #64748b;
+        font-size: 1rem;
+        margin-bottom: 15px;
+        font-style: italic;
+    }
+
+    .isbn-box {
+        background: #f8fafc;
+        padding: 8px;
+        border-radius: 6px;
+        font-family: monospace;
+        font-size: 0.85rem;
+        color: #475569;
+        border: 1px dashed #cbd5e1;
+    }
+
+    .action-btn {
+        margin-top: 20px;
+        background: #2563eb;
+        color: white;
+        text-align: center;
+        padding: 12px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: 0.2s;
+    }
+
+    .action-btn:hover {
+        background: #1d4ed8;
+    }
+</style>
+
+<div class="catalog-container">
+    <div class="catalog-header">
+        <h1>{{ page_title }}</h1>
+        <p>Explore our library across various categories and authors.</p>
+    </div>
+
+    <div class="book-grid">
+        {% for book in books %}
+        <div class="book-card">
+            <div class="category-label">{{ book.book_category.cat_name }}</div>
+            
+            <h2 class="title">{{ book.book_title }}</h2>
+            
+            <p class="author">by {{ book.book_author.auth_name }}</p>
+            
+            <div class="isbn-box">
+                ISBN: {{ book.book_isbn }}
+            </div>
+
+            {% if user.is_authenticated %}
+                <a href="{% url 'dashboard:book_detail' book.book_id %}" class="action-btn">Reserve</a>
+            {% else %}
+                <a href="{% url 'dashboard:login' %}" class="action-btn" style="background: #64748b;">Login to Borrow</a>
+            {% endif %}
+        </div>
+        {% empty %}
+        <div style="grid-column: 1/-1; text-align: center; padding: 100px;">
+            <p style="color: #94a3b8; font-size: 1.2rem;">Our library is currently empty. Check back soon!</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

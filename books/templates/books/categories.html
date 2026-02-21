@@ -1,0 +1,149 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Explore Categories | Bookly{% endblock %}
+
+{% block content %}
+<style>
+    .categories-layout {
+        display: grid;
+        grid-template-columns: 280px 1fr;
+        gap: 3rem;
+        margin-top: 2rem;
+    }
+
+    /* Sidebar Styling */
+    .filter-sidebar {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 16px;
+        border: 1px solid var(--border);
+        height: fit-content;
+        position: sticky;
+        top: 100px;
+    }
+
+    .filter-sidebar h3 {
+        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+        font-weight: 700;
+    }
+
+    .cat-stat-list {
+        list-style: none;
+    }
+
+    .cat-stat-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f1f5f9;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+    }
+
+    /* Main Grid Styling */
+    .category-card {
+        background: white;
+        border-radius: 20px;
+        border: 1px solid var(--border);
+        padding: 2.5rem;
+        text-align: center;
+        text-decoration: none;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .category-card:hover {
+        border-color: var(--primary);
+        transform: translateY(-8px);
+        box-shadow: 0 12px 24px rgba(0,0,0,0.04);
+    }
+
+    .category-icon-wrapper {
+        width: 80px;
+        height: 80px;
+        background: #f1f5f9;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+        font-size: 1.8rem;
+        color: var(--primary);
+        transition: background 0.3s;
+    }
+
+    .category-card:hover .category-icon-wrapper {
+        background: var(--primary);
+        color: white;
+    }
+
+    .category-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--dark);
+        margin-bottom: 0.5rem;
+    }
+
+    .category-count {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .category-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 2rem;
+    }
+
+    @media (max-width: 992px) {
+        .categories-layout {
+            grid-template-columns: 1fr;
+        }
+        .filter-sidebar {
+            display: none;
+        }
+    }
+</style>
+
+<div class="container">
+    <div class="page-header" style="margin-bottom: 3rem;">
+        <h1 style="font-size: 2.5rem; font-weight: 800; letter-spacing: -1px;">Shop by Category</h1>
+        <p style="color: var(--text-muted);">Find your next favorite read in our specialized collections.</p>
+    </div>
+
+    <div class="categories-layout">
+        <aside class="filter-sidebar">
+            <h3>Quick Summary</h3>
+            <div class="cat-stat-list">
+                {% for cat in categories %}
+                <div class="cat-stat-item">
+                    <span>{{ cat.cat_name }}</span>
+                    <strong>{{ cat.book_set.count }}</strong>
+                </div>
+                {% endfor %}
+            </div>
+        </aside>
+
+        <div class="category-grid">
+            {% for cat in categories %}
+            <a href="{% url 'books:book_list' %}?category={{ cat.cat_id }}" class="category-card">
+                <div class="category-icon-wrapper">
+                    {{ cat.cat_name|slice:":1" }}
+                </div>
+                <h2 class="category-title">{{ cat.cat_name }}</h2>
+                <span class="category-count">{{ cat.book_set.count }} Books</span>
+            </a>
+            {% empty %}
+            <div style="text-align: center; grid-column: 1/-1; padding: 5rem;">
+                <p>No categories found.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

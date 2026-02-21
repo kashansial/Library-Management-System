@@ -1,0 +1,28 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'author_dashboard' %}">Authors</a></li>
+            <li class="breadcrumb-item active">{{ author.auth_name }}</li>
+        </ol>
+    </nav>
+
+    <h2 class="mb-4">Books by {{ author.auth_name }}</h2>
+
+    <div class="shop-grid">
+        {% for book in books %}
+        <div class="product-card">
+            <div class="details">
+                <span class="isbn">ISBN: {{ book.book_isbn }}</span>
+                <strong class="book-title">{{ book.book_title }}</strong>
+                <p class="author-name">Category: {{ book.book_category.cat_name }}</p>
+            </div>
+        </div>
+        {% empty %}
+        <div class="alert alert-info">This author doesn't have any books listed yet.</div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,104 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<style>
+    /* Dashboard Layout */
+    .author-container {
+        max-width: 1000px;
+        margin: 3rem auto;
+        padding: 0 1rem;
+    }
+
+    .dashboard-header {
+        margin-bottom: 2.5rem;
+        text-align: center;
+    }
+
+    /* The Grid: 2 columns exactly */
+    .author-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); /* This forces 2 per row */
+        gap: 2rem;
+    }
+
+    /* Author Card Styling */
+    .author-card {
+        background: white;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .author-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        border-color: #3b82f6;
+    }
+
+    .author-info h3 {
+        margin: 0;
+        font-size: 1.25rem;
+        color: #1e293b;
+        font-weight: 700;
+    }
+
+    .author-info p {
+        margin: 0.25rem 0 0;
+        color: #64748b;
+        font-size: 0.9rem;
+    }
+
+    /* Button Styling */
+    .btn-view {
+        background: #3b82f6;
+        color: white;
+        text-decoration: none;
+        padding: 0.6rem 1.2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: background 0.2s;
+    }
+
+    .btn-view:hover {
+        background: #2563eb;
+    }
+
+    /* Responsive: Stack on small screens */
+    @media (max-width: 768px) {
+        .author-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="author-container">
+    <div class="dashboard-header">
+        <h1>Author Dashboard</h1>
+        <p>Manage and view books by our registered authors</p>
+    </div>
+
+    <div class="author-grid">
+        {% for author in authors %}
+        <div class="author-card">
+            <div class="author-info">
+                <h3>{{ author.auth_name }}</h3>
+                <p>Total Books: {{ author.book_set.count }}</p>
+            </div>
+            <a href="{% url 'books:book_list' %}?author={{ author.auth_id }}" class="btn-view">
+                View Books
+            </a>
+        </div>
+        {% empty %}
+        <div style="grid-column: 1/-1; text-align: center; padding: 3rem;">
+            <p>No authors found in the database.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
